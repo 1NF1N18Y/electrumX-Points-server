@@ -16,11 +16,10 @@ from typing import Sequence, Tuple, TYPE_CHECKING, Type, Dict
 import math
 
 import attr
-from aiorpcx import run_in_thread, sleep
+from aiorpcx import TaskGroup, run_in_thread, sleep
 
 from electrumx.lib.hash import hash_to_hex_str, hex_str_to_hash
-from electrumx.lib.tx import SkipTxDeserialize
-from electrumx.lib.util import class_logger, chunks, OldTaskGroup
+from electrumx.lib.util import class_logger, chunks
 from electrumx.server.db import UTXO
 
 if TYPE_CHECKING:
@@ -140,8 +139,7 @@ class MemPool:
             await synchronized_event.wait()
             async with self.lock:
                 # Threaded as can be expensive
-                bin_size = self.coin.MEMPOOL_COMPACT_HISTOGRAM_BINSIZE
-                await run_in_thread(self._update_histogram, bin_size)
+                await run_in_thread(self._update_histogram, 100_000)
             await sleep(self.coin.MEMPOOL_HISTOGRAM_REFRESH_SECS)
 
     def _update_histogram(self, bin_size):
@@ -167,8 +165,7 @@ class MemPool:
         '''Calculate and return a compact fee histogram as needed for
         "mempool.get_fee_histogram" protocol request.
 
-        histogram: feerate (sat/vbyte) -> total size in bytes of txs that pay approx feerate
-        bin_size: ~minimum vsize of a bucket of txs in the result (e.g. 100 kb)
+        histogram: feerate (sat/byte) -> total size in bytes of txs that pay approx feerate
         '''
         # Now compact it.  For efficiency, get_fees returns a
         # compact histogram with variable bin size.  The compact
@@ -177,7 +174,7 @@ class MemPool:
         # transactions with a fee rate in the interval
         # [rate_(n-1), rate_n)], and rate_(n-1) > rate_n.
         # Intervals are chosen to create tranches containing at
-        # least a certain cumulative size (bin_size) of transactions.
+        # least 100kb of transactions
         assert bin_size > 0
         compact = []
         cum_size = 0
@@ -289,7 +286,7 @@ class MemPool:
         # Process new transactions
         new_hashes = list(all_hashes.difference(txs))
         if new_hashes:
-            group = OldTaskGroup()
+            group = TaskGroup()
             for hashes in chunks(new_hashes, 200):
                 coro = self._fetch_and_accept(hashes, all_hashes, touched)
                 await group.spawn(coro)
@@ -329,11 +326,7 @@ class MemPool:
                 # mempool or it may have gotten in a block
                 if not raw_tx:
                     continue
-                try:
-                    tx, tx_size = deserializer(raw_tx).read_tx_and_vsize()
-                except SkipTxDeserialize as ex:
-                    self.logger.debug(f'skipping tx {hash_to_hex_str(hash)}: {ex}')
-                    continue
+                tx, tx_size = deserializer(raw_tx).read_tx_and_vsize()
                 # Convert the inputs and outputs into (hashX, value) pairs
                 # Drop generation-like inputs from MemPoolTx.prevouts
                 txin_pairs = tuple((txin.prev_hash, txin.prev_idx)
@@ -367,7 +360,7 @@ class MemPool:
 
     async def keep_synchronized(self, synchronized_event):
         '''Keep the mempool synchronized with the daemon.'''
-        async with OldTaskGroup() as group:
+        async with TaskGroup() as group:
             await group.spawn(self._refresh_hashes(synchronized_event))
             await group.spawn(self._refresh_histogram(synchronized_event))
             await group.spawn(self._logging(synchronized_event))
