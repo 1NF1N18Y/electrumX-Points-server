@@ -1,5 +1,8 @@
 
-connected to http://radioblockchain.info/  soon to serve dogecoin-electrum
+connected to http://bitexplorer.io/ serving bitnet-electrum-wallet transactions
+
+
+!WOOF !WOOF
 
 
 
@@ -51,16 +54,18 @@ KkkkkkOKKKKKKKK00000KKK00KKKKKKKKKKKKK00OOOOOOOOOOOkkxxkkkxxxxO00000000000000N
 
 
 
+our discord channel
+discord.gg/7jGm6Nvqw7
 
 
+to help with server fees dontate here :
+bitcoin Donation address: bc1qys4j9ch9gma7deatvgd4jj85kz83e34wsgy96m
 
-
-bitcoin Donation address: 1MxdqrDRu97BNG9n17e8jejBwAUUxRCLhy
-dogecoin Donation address: DMxKwRzE6q5r1rq3Tib4CPFaHkUaJtiShG
-
+based off of
 Radiocoin Core 1.14-electrumX
 run your own copy
 
-https://github.com/c4pt000/electrumx-dogecoin-server-radiocoin-4.1.4
+https://github.com/bitnet-io/electrumX-bitnet-server
 
-https://github.com/c4pt000/electrum-radiocoin
+download the wallet
+https://github.com/bitnet-io/electrum-bitnet-wallet
