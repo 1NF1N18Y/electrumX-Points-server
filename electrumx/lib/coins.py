@@ -1245,28 +1245,57 @@ class DogecoinTestnet(Dogecoin):
 # dont use
     DESERIALIZER = lib_tx.DeserializerAuxPowSegWit
 
-class Bitnet(AuxPowMixin, Coin):
-    NAME = "Bitnet"
-    SHORTNAME = "BIT"
-    NET = "mainnet"
-    XPUB_VERBYTES = bytes.fromhex("02facafd")
-    XPRV_VERBYTES = bytes.fromhex("02fac398")
-    P2PKH_VERBYTE = bytes.fromhex("19")
-    P2SH_VERBYTES = (bytes.fromhex("16"),)
-    WIF_BYTE = bytes.fromhex("9e")
-    GENESIS_HASH =  ('0000049008321e63472304c0fc8d3937'
-	             'b7679cdb2144f8ebe8b8fb29e4deae94')
-    ESTIMATE_FEE = 1.000
-    RELAY_FEE = 1.000
-    DAEMON = daemon.FakeEstimateFeeDaemon
-    TX_COUNT = 10000
-    TX_COUNT_HEIGHT = 10000
-    TX_PER_BLOCK = 1
+#class Bitnet(AuxPowMixin, Coin):
+#    NAME = "Bitnet"
+#    SHORTNAME = "BIT"
+#    NET = "mainnet"
+#    XPUB_VERBYTES = bytes.fromhex("02facafd")
+#    XPRV_VERBYTES = bytes.fromhex("02fac398")
+#    P2PKH_VERBYTE = bytes.fromhex("19")
+#    P2SH_VERBYTES = (bytes.fromhex("16"),)
+#    WIF_BYTE = bytes.fromhex("9e")
+#    GENESIS_HASH =  ('0000049008321e63472304c0fc8d3937'
+#	             'b7679cdb2144f8ebe8b8fb29e4deae94')
+#    ESTIMATE_FEE = 1.000
+#    RELAY_FEE = 1.000
+#    DAEMON = daemon.FakeEstimateFeeDaemon
+#    TX_COUNT = 10000
+#    TX_COUNT_HEIGHT = 10000
+#    TX_PER_BLOCK = 1
 
 #    DESERIALIZER = lib_tx.DeserializerSegWit
 #    DESERIALIZER = lib_tx.Deserializer
 
 
+class Bitnet(Coin):
+    NAME = "Bitnet"
+    SHORTNAME = "BIT"
+    NET = "mainnet"
+    XPUB_VERBYTES = bytes.fromhex("0488b21e")
+    XPRV_VERBYTES = bytes.fromhex("0488ade4")
+    P2PKH_VERBYTE = bytes.fromhex("19") #25
+    P2SH_VERBYTES = (bytes.fromhex("1a"), bytes.fromhex("16")) #26 and 22 respectively
+    WIF_BYTE = bytes.fromhex("9e") #158
+    GENESIS_HASH = ('00000caff19214512f927af2b7cead4b'
+                    '33a54c096e432a275628cb4cf8d4b73c')
+    DESERIALIZER = lib_tx.DeserializerSegWit
+    TX_COUNT = 8908766
+    TX_COUNT_HEIGHT = 1105256
+    TX_PER_BLOCK = 10
+    RPC_PORT = 9332
+    REORG_LIMIT = 800
+    ESTIMATE_FEE = 0.001
+    RELAY_FEE = 0.001
+    DAEMON = daemon.FakeEstimateFeeDaemon
+#    PEERS = [
+#        'ex.lug.gs s444',
+#        'electrum-ltc.bysh.me s t',
+#        'electrum-ltc.ddns.net s t',
+#        'electrum-ltc.wilv.in s t',
+#        'electrum.cryptomachine.com p1000 s t',
+#        'electrum.ltc.xurious.com s t',
+#        'eywr5eubdbbe2laq.onion s50008 t50007',
+#    ]
 
 
 # Source: https://github.com/dashpay/dash
