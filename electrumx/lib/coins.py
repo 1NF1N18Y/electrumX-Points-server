@@ -1267,6 +1267,27 @@ class DogecoinTestnet(Dogecoin):
 #    DESERIALIZER = lib_tx.Deserializer
 
 
+class Points(AuxPowMixin, Coin):
+    NAME = "Points"
+    SHORTNAME = "PNT"
+    NET = "mainnet"
+    XPUB_VERBYTES = bytes.fromhex("048df21e")
+    XPRV_VERBYTES = bytes.fromhex("0489a6e4")
+    P2PKH_VERBYTE = bytes.fromhex("37")
+    P2SH_VERBYTES = (bytes.fromhex("75"),)
+    WIF_BYTE = bytes.fromhex("6b")
+    GENESIS_HASH =    ('000000d21317d68f5253f7ef4cecb163'
+                       'e09d004b598a98be62e857708719fc33')    
+    DESERIALIZER = lib_tx.DeserializerSegWit  
+    TX_COUNT = 8908766
+    TX_COUNT_HEIGHT = 1105256
+    TX_PER_BLOCK = 10
+    RPC_PORT = 3466
+    REORG_LIMIT = 800
+    ESTIMATE_FEE = 0.001
+    RELAY_FEE = 0.001
+    DAEMON = daemon.FakeEstimateFeeDaemon
+
 class Bitnet(Coin):
     NAME = "Bitnet"
     SHORTNAME = "BIT"
